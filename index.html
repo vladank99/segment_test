@@ -1,0 +1,108 @@
+<!doctype html>
+</div>`;
+return el;
+}
+
+
+function renderCatalog(){
+const term = $search.value.trim().toLowerCase();
+$catalog.innerHTML = '';
+PRODUCTS.filter(p => (currentFilter==='all' || p.category===currentFilter) && (!term || p.title.toLowerCase().includes(term)))
+.forEach(p => $catalog.appendChild(productCard(p)));
+}
+
+
+document.querySelectorAll('[data-filter]').forEach(btn=>{
+btn.addEventListener('click',()=>{currentFilter = btn.dataset.filter; renderCatalog();})
+});
+$search.addEventListener('input', renderCatalog);
+
+
+// ====== КОРЗИНА ======
+const $cartList = document.getElementById('cartList');
+const $cartTotal = document.getElementById('cartTotal');
+const $clearCart = document.getElementById('clearCart');
+const STORAGE_KEY = 'demo_shop_cart_v1';
+
+
+const Cart = {
+items: {},
+load(){ try{ this.items = JSON.parse(localStorage.getItem(STORAGE_KEY))||{} }catch{ this.items={} } },
+save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(this.items)) },
+add(id){ this.items[id] = (this.items[id]||0)+1; this.save(); renderCart(); },
+remove(id){ delete this.items[id]; this.save(); renderCart(); },
+change(id,delta){ const q=(this.items[id]||0)+delta; if(q<=0) this.remove(id); else { this.items[id]=q; this.save(); renderCart(); } },
+total(){ return Object.entries(this.items).reduce((sum,[id,q])=>{ const p=PRODUCTS.find(x=>x.id===id); return sum + (p?p.price*q:0) },0) }
+};
+
+
+function cartItemRow(p, qty){
+const row = document.createElement('div');
+row.className = 'cart-item';
+row.innerHTML = `
+<div>
+<div style="font-weight:600">${p.title}</div>
+<div class="tag">${money(p.price)} × ${qty}</div>
+</div>
+<div class="qty">
+<button data-dec="${p.id}" aria-label="Уменьшить">−</button>
+<span>${qty}</span>
+<button data-inc="${p.id}" aria-label="Увеличить">+</button>
+</div>
+<button class="btn danger" data-del="${p.id}">×</button>`;
+return row;
+}
+
+
+function renderCart(){
+$cartList.innerHTML = '';
+const ids = Object.keys(Cart.items);
+if(ids.length===0){
+$cartList.innerHTML = '<p class="cart-empty">Корзина пуста. Добавьте товары из каталога.</p>';
+}else{
+ids.forEach(id=>{
+const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
+$cartList.appendChild(cartItemRow(p, Cart.items[id]));
+});
+}
+$cartTotal.textContent = money(Cart.total());
+}
+
+
+// Слушатели на динамические кнопки каталога/корзины
+document.addEventListener('click', (e)=>{
+const t = e.target;
+if(t.matches('[data-add]')){ Cart.add(t.dataset.add) }
+if(t.matches('[data-del]')){ Cart.remove(t.dataset.del) }
+if(t.matches('[data-inc]')){ Cart.change(t.dataset.inc, +1) }
+if(t.matches('[data-dec]')){ Cart.change(t.dataset.dec, -1) }
+});
+
+
+$clearCart.addEventListener('click', ()=>{ Cart.items={}; Cart.save(); renderCart(); });
+
+
+// Оформление заказа (демо): формируем письмо
+document.getElementById('checkout').addEventListener('click', ()=>{
+const ids = Object.keys(Cart.items);
+if(ids.length===0){ alert('Корзина пуста'); return }
+const lines = ids.map(id=>{ const p=PRODUCTS.find(x=>x.id===id); return `${p.title} × ${Cart.items[id]} — ${money(p.price*Cart.items[id])}`;});
+const body = encodeURIComponent('Здравствуйте! Хочу оформить заказ:\n\n' + lines.join('\n') + `\n\nИтого: ${money(Cart.total())}`);
+window.location.href = `mailto:shop@example.com?subject=Заказ с сайта&body=${body}`;
+});
+
+
+// Инициализация
+Cart.load();
+renderCatalog();
+renderCart();
+
+
+// ====== (опционально) Пример событий для аналитики ======
+// Если позже добавите аналитику (Plausible/GoatCounter и т.п.),
+// вы можете вызывать здесь свои события, например:
+// function track(evt, data){ console.log('[track]', evt, data) }
+// И вызывать: track('add_to_cart', {id})
+</script>
+</body>
+</html>
