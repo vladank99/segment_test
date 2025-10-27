@@ -4,67 +4,37 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Мой Магазин</title>
-  <meta name="description" content="Простой демо‑магазин на GitHub Pages: каталог товаров, корзина и оформление заказа." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🛍️</text></svg>">
   <style>
-    :root{
-      --bg:#0b0b10; --panel:#11121a; --card:#171827; --muted:#a7b0c0; --text:#e9ecf1; --accent:#7c86ff; --accent-2:#64d2ff; --danger:#ff6b6b;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;background:linear-gradient(180deg,#0b0b10,#101223);color:var(--text)}
-    .container{max-width:1100px;margin-inline:auto;padding:24px}
-    header{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:16px 0}
-    .brand{display:flex;align-items:center;gap:10px}
-    .brand h1{font-size:20px;margin:0}
-    .toolbar{display:flex;gap:10px;align-items:center}
-    input[type="search"]{background:var(--panel);border:1px solid #26283b;color:var(--text);padding:10px 12px;border-radius:12px;min-width:240px;outline:none}
-    .btn{background:var(--accent);border:none;color:white;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:600}
-    .btn.secondary{background:#26283b;color:var(--text)}
-    .btn.danger{background:var(--danger)}
-
-    .grid{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:16px}
-    @media(min-width:600px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(min-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-
-    .card{background:var(--card);border:1px solid #26283b;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+    body{margin:0;font-family:system-ui;background:#0b0b10;color:#e9ecf1}
+    .container{max-width:1100px;margin:auto;padding:24px}
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(1,1fr)}
+    @media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+    .card{background:#171827;border:1px solid #26283b;border-radius:16px;overflow:hidden}
     .card img{width:100%;aspect-ratio:4/3;object-fit:cover}
-    .card-body{padding:14px;display:flex;flex-direction:column;gap:8px}
-    .price{font-weight:700}
-    .tag{font-size:12px;color:var(--muted)}
-
-    .layout{display:grid;grid-template-columns:1fr;gap:20px}
+    .card-body{padding:14px}
+    .btn{background:#7c86ff;border:none;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:600}
+    .btn.secondary{background:#26283b}
+    aside{position:sticky;top:16px;background:#11121a;border:1px solid #26283b;border-radius:16px;padding:16px}
+    .layout{display:grid;gap:20px}
     @media(min-width:980px){.layout{grid-template-columns:2fr 1fr}}
-
-    aside{position:sticky;top:16px;align-self:start;background:var(--panel);border:1px solid #26283b;border-radius:16px;padding:16px}
-    aside h2{margin:0 0 8px;font-size:18px}
-    .cart-empty{color:var(--muted);font-size:14px}
     .cart-item{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px dashed #2a2d45}
-    .cart-item:last-child{border-bottom:none}
-    .qty{display:flex;align-items:center;gap:6px}
-    .qty button{background:#26283b;border:none;color:var(--text);padding:4px 8px;border-radius:8px;cursor:pointer}
-    .total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-weight:700}
-    footer{margin-top:32px;color:var(--muted);font-size:13px;text-align:center}
-    .pill{background:#1e2136;color:#bfc7db;border-radius:999px;padding:4px 10px;font-size:12px}
-    .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .link{color:var(--accent-2);text-decoration:none}
+    .qty button{background:#26283b;border:none;color:#e9ecf1;padding:4px 8px;border-radius:8px;cursor:pointer}
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <div class="brand">
-        <span class="pill">Demo</span>
-        <h1>Мой Магазин</h1>
-      </div>
-      <div class="toolbar">
-        <input id="search" type="search" placeholder="Поиск товаров…" />
-        <button id="clearCart" class="btn secondary" title="Очистить корзину">Очистить</button>
+    <header style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <h1 style="margin:0">Мой Магазин</h1>
+      <div>
+        <input id="search" type="search" placeholder="Поиск…" style="background:#11121a;border:1px solid #26283b;color:#e9ecf1;padding:10px 12px;border-radius:12px;min-width:240px;outline:none">
+        <button id="clearCart" class="btn secondary">Очистить</button>
       </div>
     </header>
 
     <div class="layout">
       <main>
-        <div class="filters" style="margin:0 0 8px">
+        <div style="display:flex;gap:10px;margin:8px 0 12px">
           <button data-filter="all" class="btn secondary">Все</button>
           <button data-filter="electronics" class="btn secondary">Электроника</button>
           <button data-filter="home" class="btn secondary">Дом</button>
@@ -74,36 +44,32 @@
       </main>
 
       <aside>
-        <h2>Корзина</h2>
+        <h2 style="margin:0 0 8px">Корзина</h2>
         <div id="cartList"></div>
-        <div class="total"><span>Итого</span><span id="cartTotal">0 ₽</span></div>
+        <div style="display:flex;justify-content:space-between;margin-top:12px;font-weight:700">
+          <span>Итого</span><span id="cartTotal">0 ₽</span>
+        </div>
         <button id="checkout" class="btn" style="width:100%;margin-top:10px">Оформить заказ</button>
       </aside>
     </div>
-
-    <footer>
-      Сделано как демо для GitHub Pages. Изменяйте товары внутри файла <code>index.html</code> → переменная <code>PRODUCTS</code>.
-      Оплата не подключена — это шаблон.
-    </footer>
   </div>
 
+  <!-- ВАЖНО: весь JS — внутри <script> и в самом конце -->
   <script>
-    // ====== ДАННЫЕ ТОВАРОВ ======
     const PRODUCTS = [
-      { id: 'p1', title: 'Наушники Breeze X', price: 2990, category: 'electronics', img: 'https://picsum.photos/seed/headphones/800/600', desc: 'Лёгкие, складные, 24ч работы.' },
-      { id: 'p2', title: 'Лампа Glow', price: 1590, category: 'home', img: 'https://picsum.photos/seed/lamp/800/600', desc: 'Тёплый свет и USB‑питание.' },
-      { id: 'p3', title: 'Игровой контроллер NeoPad', price: 4490, category: 'electronics', img: 'https://picsum.photos/seed/gamepad/800/600', desc: 'Поддержка BT 5.0, низкая задержка.' },
-      { id: 'p4', title: 'Плюшевый тигр', price: 990, category: 'toys', img: 'https://picsum.photos/seed/plush/800/600', desc: 'Гипоаллергенный наполнитель.' },
-      { id: 'p5', title: 'Заварник TeaGo', price: 690, category: 'home', img: 'https://picsum.photos/seed/teago/800/600', desc: 'Нержавеющая сталь, 300 мл.' },
-      { id: 'p6', title: 'Колонка Ripple Mini', price: 2190, category: 'electronics', img: 'https://picsum.photos/seed/speaker/800/600', desc: 'Громкий звук в маленьком корпусе.' }
+      { id:'p1', title:'Наушники Breeze X', price:2990, category:'electronics', img:'https://picsum.photos/seed/headphones/800/600', desc:'Лёгкие, складные, 24ч работы.' },
+      { id:'p2', title:'Лампа Glow', price:1590, category:'home', img:'https://picsum.photos/seed/lamp/800/600', desc:'Тёплый свет и USB-питание.' },
+      { id:'p3', title:'Контроллер NeoPad', price:4490, category:'electronics', img:'https://picsum.photos/seed/gamepad/800/600', desc:'BT 5.0, низкая задержка.' },
+      { id:'p4', title:'Плюшевый тигр', price:990, category:'toys', img:'https://picsum.photos/seed/plush/800/600', desc:'Гипоаллергенный наполнитель.' },
+      { id:'p5', title:'Заварник TeaGo', price:690, category:'home', img:'https://picsum.photos/seed/teago/800/600', desc:'Нерж. сталь, 300 мл.' },
+      { id:'p6', title:'Колонка Ripple Mini', price:2190, category:'electronics', img:'https://picsum.photos/seed/speaker/800/600', desc:'Громкий звук.' }
     ];
 
-    // ====== РЕНДЕР КАТАЛОГА ======
     const $catalog = document.getElementById('catalog');
     const $search = document.getElementById('search');
     let currentFilter = 'all';
 
-    function money(n){return new Intl.NumberFormat('ru-RU',{style:'currency',currency:'RUB',maximumFractionDigits:0}).format(n)}
+    function money(n){ return new Intl.NumberFormat('ru-RU',{style:'currency',currency:'RUB',maximumFractionDigits:0}).format(n) }
 
     function productCard(p){
       const el = document.createElement('article');
@@ -111,11 +77,11 @@
       el.innerHTML = `
         <img src="${p.img}" alt="${p.title}">
         <div class="card-body">
-          <div class="tag">${p.category}</div>
+          <div style="color:#a7b0c0;font-size:12px">${p.category}</div>
           <h3 style="margin:0 0 4px">${p.title}</h3>
-          <p style="margin:0;color:var(--muted);font-size:14px">${p.desc}</p>
+          <p style="margin:0;color:#a7b0c0;font-size:14px">${p.desc}</p>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-            <span class="price">${money(p.price)}</span>
+            <span style="font-weight:700">${money(p.price)}</span>
             <button class="btn" data-add="${p.id}">В корзину</button>
           </div>
         </div>`;
@@ -125,29 +91,30 @@
     function renderCatalog(){
       const term = $search.value.trim().toLowerCase();
       $catalog.innerHTML = '';
-      PRODUCTS.filter(p => (currentFilter==='all' || p.category===currentFilter) && (!term || p.title.toLowerCase().includes(term)))
+      PRODUCTS
+        .filter(p => (currentFilter==='all' || p.category===currentFilter) && (!term || p.title.toLowerCase().includes(term)))
         .forEach(p => $catalog.appendChild(productCard(p)));
     }
 
     document.querySelectorAll('[data-filter]').forEach(btn=>{
-      btn.addEventListener('click',()=>{currentFilter = btn.dataset.filter; renderCatalog();})
+      btn.addEventListener('click',()=>{ currentFilter = btn.dataset.filter; renderCatalog(); });
     });
     $search.addEventListener('input', renderCatalog);
 
-    // ====== КОРЗИНА ======
+    // --- Корзина ---
     const $cartList = document.getElementById('cartList');
     const $cartTotal = document.getElementById('cartTotal');
     const $clearCart = document.getElementById('clearCart');
     const STORAGE_KEY = 'demo_shop_cart_v1';
 
     const Cart = {
-      items: {},
+      items:{},
       load(){ try{ this.items = JSON.parse(localStorage.getItem(STORAGE_KEY))||{} }catch{ this.items={} } },
       save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(this.items)) },
-      add(id){ this.items[id] = (this.items[id]||0)+1; this.save(); renderCart(); },
+      add(id){ this.items[id]=(this.items[id]||0)+1; this.save(); renderCart(); },
       remove(id){ delete this.items[id]; this.save(); renderCart(); },
       change(id,delta){ const q=(this.items[id]||0)+delta; if(q<=0) this.remove(id); else { this.items[id]=q; this.save(); renderCart(); } },
-      total(){ return Object.entries(this.items).reduce((sum,[id,q])=>{ const p=PRODUCTS.find(x=>x.id===id); return sum + (p?p.price*q:0) },0) }
+      total(){ return Object.entries(this.items).reduce((sum,[id,q])=>{ const p=PRODUCTS.find(x=>x.id===id); return sum+(p?p.price*q:0) },0) }
     };
 
     function cartItemRow(p, qty){
@@ -156,14 +123,14 @@
       row.innerHTML = `
         <div>
           <div style="font-weight:600">${p.title}</div>
-          <div class="tag">${money(p.price)} × ${qty}</div>
+          <div style="color:#a7b0c0;font-size:12px">${money(p.price)} × ${qty}</div>
         </div>
         <div class="qty">
           <button data-dec="${p.id}" aria-label="Уменьшить">−</button>
           <span>${qty}</span>
           <button data-inc="${p.id}" aria-label="Увеличить">+</button>
         </div>
-        <button class="btn danger" data-del="${p.id}">×</button>`;
+        <button class="btn secondary" data-del="${p.id}">×</button>`;
       return row;
     }
 
@@ -171,8 +138,8 @@
       $cartList.innerHTML = '';
       const ids = Object.keys(Cart.items);
       if(ids.length===0){
-        $cartList.innerHTML = '<p class="cart-empty">Корзина пуста. Добавьте товары из каталога.</p>';
-      }else{
+        $cartList.innerHTML = '<p style="color:#a7b0c0">Корзина пуста. Добавьте товары из каталога.</p>';
+      } else {
         ids.forEach(id=>{
           const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
           $cartList.appendChild(cartItemRow(p, Cart.items[id]));
@@ -181,37 +148,30 @@
       $cartTotal.textContent = money(Cart.total());
     }
 
-    // Слушатели на динамические кнопки каталога/корзины
-    document.addEventListener('click', (e)=>{
-      const t = e.target;
-      if(t.matches('[data-add]')){ Cart.add(t.dataset.add) }
-      if(t.matches('[data-del]')){ Cart.remove(t.dataset.del) }
-      if(t.matches('[data-inc]')){ Cart.change(t.dataset.inc, +1) }
-      if(t.matches('[data-dec]')){ Cart.change(t.dataset.dec, -1) }
+    document.addEventListener('click',(e)=>{
+      const t=e.target;
+      if(t.matches('[data-add]')) Cart.add(t.dataset.add);
+      if(t.matches('[data-del]')) Cart.remove(t.dataset.del);
+      if(t.matches('[data-inc]')) Cart.change(t.dataset.inc, +1);
+      if(t.matches('[data-dec]')) Cart.change(t.dataset.dec, -1);
     });
 
     $clearCart.addEventListener('click', ()=>{ Cart.items={}; Cart.save(); renderCart(); });
 
-    // Оформление заказа (демо): формируем письмо
     document.getElementById('checkout').addEventListener('click', ()=>{
       const ids = Object.keys(Cart.items);
       if(ids.length===0){ alert('Корзина пуста'); return }
       const lines = ids.map(id=>{ const p=PRODUCTS.find(x=>x.id===id); return `${p.title} × ${Cart.items[id]} — ${money(p.price*Cart.items[id])}`;});
-      const body = encodeURIComponent('Здравствуйте! Хочу оформить заказ:\n\n' + lines.join('\n') + `\n\nИтого: ${money(Cart.total())}`);
+      const body = encodeURIComponent('Здравствуйте! Хочу оформить заказ:\\n\\n' + lines.join('\\n') + `\\n\\nИтого: ${money(Cart.total())}`);
       window.location.href = `mailto:shop@example.com?subject=Заказ с сайта&body=${body}`;
     });
 
-    // Инициализация
+    // init
     Cart.load();
     renderCatalog();
     renderCart();
-
-    // ====== (опционально) Пример событий для аналитики ======
-    // Если позже добавите аналитику (Plausible/GoatCounter и т.п.), 
-    // вы можете вызывать здесь свои события, например:
-    // function track(evt, data){ console.log('[track]', evt, data) }
-    // И вызывать: track('add_to_cart', {id})
   </script>
 </body>
 </html>
+
 
